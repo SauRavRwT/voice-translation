@@ -20,6 +20,10 @@
 !pip install langdetect
 
 !pip install sounddevice wavio SpeechRecognition googletrans==4.0.0-rc1 langdetect gtts pydub
+
+pip install sounddevice numpy pygame
+
+pip install sounddevice numpy pygame speech_recognition googletrans==4.0.0-rc1 gTTS langdetect
 ```
 
 4. create python virtual env: `python -m venv venv`
