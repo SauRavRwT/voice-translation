@@ -7,6 +7,11 @@ from pydub import AudioSegment
 from pydub.playback import play
 import os
 import langdetect
+import time
+
+# Create a folder for recordings if it doesn't exist
+if not os.path.exists("test_recording"):
+    os.makedirs("test_recording")
 
 # Initialize the translator
 translator = Translator()
@@ -49,26 +54,33 @@ def recognize_speech(audio_file):
 
 # Function to translate text
 def translate_text(text, src_lang, dest_lang):
-    translated = translator.translate(text, src=src_lang, dest=dest_lang)
-    return translated.text
+    try:
+        translated = translator.translate(text, src=src_lang, dest=dest_lang)
+        return translated.text
+    except Exception as e:
+        print(f"Translation error: {e}")
+        return text  # Return the original text if translation fails
 
 # Function to convert text to speech and play it
 def text_to_speech(text, lang):
-    tts = gTTS(text, lang=lang)
-    tts.save("./test_recording/output.mp3")
-    audio = AudioSegment.from_mp3("./test_recording/output.mp3")
-    play(audio)
-    os.remove("./test_recording/output.mp3")
+    try:
+        tts = gTTS(text, lang=lang)
+        tts.save("./test_recording/output.mp3")
+        audio = AudioSegment.from_mp3("./test_recording/output.mp3")
+        play(audio)
+        os.remove("./test_recording/output.mp3")
+    except Exception as e:
+        print(f"Text-to-Speech error: {e}")
 
-# Main function to handle the conversation
-def two_way_translation():
+# Main function to handle the real-time conversation
+def real_time_translation():
     user1_lang = None
     user2_lang = None
 
     while True:
         # User 1's turn
-        print("User 1, please speak:")
-        record_audio("./test_recording/user1_input.wav")
+        print("Listening to User 1...")
+        record_audio("./test_recording/user1_input.wav", duration=5)
         user1_text, detected_lang1 = recognize_speech("./test_recording/user1_input.wav")
         
         if user1_text:
@@ -83,9 +95,12 @@ def two_way_translation():
                 print(f"Translated for User 2: {translated_text}")
                 text_to_speech(translated_text, user2_lang)
         
+        # Pause for smooth transition
+        time.sleep(1)
+
         # User 2's turn
-        print("User 2, please speak:")
-        record_audio("./test_recording/user2_input.wav")
+        print("Listening to User 2...")
+        record_audio("./test_recording/user2_input.wav", duration=5)
         user2_text, detected_lang2 = recognize_speech("./test_recording/user2_input.wav")
         
         if user2_text:
@@ -99,11 +114,19 @@ def two_way_translation():
                 translated_text = translate_text(user2_text, user2_lang, user1_lang)
                 print(f"Translated for User 1: {translated_text}")
                 text_to_speech(translated_text, user1_lang)
+        
+        # Pause for smooth transition
+        time.sleep(1)
 
-        # Ask if users want to continue
+        # Ask if users want to continue after each exchange
         continue_conversation = input("Do you want to continue the conversation? (yes/no): ").lower()
         if continue_conversation != 'yes':
+            print("Conversation ended.")
             break
 
 # Run the function
-two_way_translation()   
+if __name__ == "__main__":
+    try:
+        real_time_translation()
+    except KeyboardInterrupt:
+        print("\nConversation interrupted. Exiting.")

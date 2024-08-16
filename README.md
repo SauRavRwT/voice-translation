@@ -2,11 +2,31 @@
 
 ## Setup
 
-1. Clone the repository: `git clone https://github.com/SauRavRwT/voice-translation.git`
+1. Clone the repository: 
 
-2. Navigate to the project directory: `cd voice-translation`
+```bash
+git clone https://github.com/SauRavRwT/voice-translation.git
+```
+2. Navigate to the project directory: 
 
-3. Install python dependencies: 
+```bash
+cd voice-translation
+```
+3. create python virtual env: 
+
+```bash
+mkdir venv # making dir
+
+python -m venv venv # making virtual env
+```
+4. To activate virtual env: 
+
+```bash
+source venv/bin/activate  # For Linux/Mac
+
+venv\scripts\activate  # For Windows
+```
+5. Install python dependencies: 
 
 ```bash
 !pip install googletrans==4.0.0-rc1
@@ -21,21 +41,13 @@
 
 !pip install sounddevice wavio SpeechRecognition googletrans==4.0.0-rc1 langdetect gtts pydub
 
-pip install sounddevice numpy pygame
+!pip install sounddevice numpy pygame
 
-pip install sounddevice numpy pygame speech_recognition googletrans==4.0.0-rc1 gTTS langdetect
+!pip install sounddevice numpy pygame speech_recognition googletrans==4.0.0-rc1 gTTS langdetect
 ```
 
-4. create python virtual env: `python -m venv venv`
-
-5. To activate env: 
-
-```bash
-source venv/bin/activate  # For Linux/Mac
-venv\Scripts\activate  # For Windows
-```
 6. Now you are done!!, Run your python file: 
 
 ```bash
-python file_name.py
+python speech_translation.py
 ```
