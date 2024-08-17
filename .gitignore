@@ -1,3 +1,2 @@
-# misc
-.venv
-.test_recording
+# remove folder
+venv

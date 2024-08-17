@@ -1,4 +1,4 @@
-# Speech Translation
+# Text Translation
 
 ## Setup
 
@@ -15,9 +15,9 @@ cd voice-translation
 3. create python virtual env: 
 
 ```bash
-mkdir venv # making dir
+mkdir venv # Making dir
 
-python -m venv venv # making virtual env
+python -m venv venv # Making virtual env
 ```
 4. To activate virtual env: 
 
@@ -29,25 +29,13 @@ venv\scripts\activate  # For Windows
 5. Install python dependencies: 
 
 ```bash
-!pip install googletrans==4.0.0-rc1
-
-!pip install gtts googletrans==4.0.0-rc1 speechrecognition pydub
-
-!pip install sounddevice googletrans==4.0.0-rc1 gtts speechrecognition pydub
-
-!pip install sounddevice wavio SpeechRecognition
-
-!pip install langdetect
-
-!pip install sounddevice wavio SpeechRecognition googletrans==4.0.0-rc1 langdetect gtts pydub
-
-!pip install sounddevice numpy pygame
-
-!pip install sounddevice numpy pygame speech_recognition googletrans==4.0.0-rc1 gTTS langdetect
+pip install googletrans==4.0.0-rc1
 ```
 
 6. Now you are done!!, Run your python file: 
 
 ```bash
-python speech_translation.py
+python text_translation-s.py # For server
+
+python text_translation-c.py # For client
 ```
