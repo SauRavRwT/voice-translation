@@ -47,7 +47,8 @@ def handle_client(client_socket, user_id):
             if not msg:
                 break
             
-            print(f"Received message from {user_id}: {msg}")
+            # Log the original message on the server
+            print(f"{user_id} ({src_lang}) sent: {msg}")
 
             # Forward the translated message to the other users
             for other_user_id, other_client_socket in clients.items():
@@ -55,8 +56,9 @@ def handle_client(client_socket, user_id):
                     other_src_lang = user_data[other_user_id]['src_lang']
                     try:
                         translated_text = translator.translate(msg, src=src_lang, dest=other_src_lang).text
-                        response = f"{user_id} (translated to {languages[other_src_lang]}): {translated_text}"
-                        print(f"Server log: {response}")  # Show translated message on the server
+                        # Log the translated message on the server
+                        print(f"Translated to {other_src_lang}: {translated_text}")
+                        response = f"{user_id} ({src_lang}) sent: {msg} | Translated to {other_src_lang}: {translated_text}"
                         other_client_socket.send(response.encode('utf-8'))
                     except Exception as e:
                         error_msg = f"Error in translation: {str(e)}"
