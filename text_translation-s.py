@@ -1,20 +1,17 @@
 import socket
 import threading
 from googletrans import Translator
+import tkinter as tk
+from tkinter import scrolledtext, ttk
+from ttkthemes import ThemedTk
 
 # Initialize the translator
 translator = Translator()
 
 # Supported languages dictionary
 languages = {
-    'en': 'English',
-    'hi': 'Hindi',
-    'es': 'Spanish',
-    'fr': 'French',
-    'de': 'German',
-    'zh-cn': 'Chinese (Simplified)',
-    'ar': 'Arabic',
-    'ja': 'Japanese'
+    'en': 'English', 'hi': 'Hindi', 'es': 'Spanish', 'fr': 'French',
+    'de': 'German', 'zh-cn': 'Chinese (Simplified)', 'ar': 'Arabic', 'ja': 'Japanese'
 }
 
 # Track users and their language preferences
@@ -22,42 +19,41 @@ user_data = {}
 clients = {}
 user_count = 0
 
+# Function to update the GUI log
+def update_log(text):
+    log_display.configure(state='normal')
+    log_display.insert(tk.END, text + "\n")
+    log_display.configure(state='disabled')
+    log_display.see(tk.END)
+
 # Function to handle communication between users
 def handle_client(client_socket, user_id):
-    print(f"{user_id} connected.")
+    update_log(f"{user_id} connected.")
     
-    # Prompt for source language preferences (spoken language)
     if user_id not in user_data:
-        client_socket.send("Enter your spoken language code (e.g., 'hi' for Hindi): ".encode('utf-8'))
+        client_socket.send("Enter your spoken language code: ".encode('utf-8'))
         src_lang = client_socket.recv(1024).decode('utf-8').strip().lower()
         if src_lang not in languages:
             src_lang = 'en'  # Default to English if invalid
         user_data[user_id] = {'src_lang': src_lang}
 
-    # Store the user's spoken language
     src_lang = user_data[user_id]['src_lang']
-
-    # Add the client to the clients list
     clients[user_id] = client_socket
 
-    # Handle messages and send translations between users
     while True:
         try:
             msg = client_socket.recv(1024).decode('utf-8')
             if not msg:
                 break
             
-            # Log the original message on the server
-            print(f"{user_id} ({src_lang}) sent: {msg}")
+            update_log(f"{user_id} ({src_lang}) sent: {msg}")
 
-            # Forward the translated message to the other users
             for other_user_id, other_client_socket in clients.items():
                 if other_user_id != user_id:
                     other_src_lang = user_data[other_user_id]['src_lang']
                     try:
                         translated_text = translator.translate(msg, src=src_lang, dest=other_src_lang).text
-                        # Log the translated message on the server
-                        print(f"Translated to {other_src_lang}: {translated_text}")
+                        update_log(f"Translated to {other_src_lang}: {translated_text}")
                         response = f"{user_id} ({src_lang}) sent: {msg} | Translated to {other_src_lang}: {translated_text}"
                         other_client_socket.send(response.encode('utf-8'))
                     except Exception as e:
@@ -67,18 +63,16 @@ def handle_client(client_socket, user_id):
         except ConnectionResetError:
             break
 
-    # Clean up when the client disconnects
-    print(f"{user_id} disconnected.")
+    update_log(f"{user_id} disconnected.")
     del clients[user_id]
     client_socket.close()
 
-# Set up the server
 def start_server():
     global user_count
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind(('0.0.0.0', 5000))  # Bind to all available interfaces at port 5000
-    server.listen(5)  # Listen for up to 5 connections
-    print("Server listening on port 5000")
+    server.bind(('0.0.0.0', 5000))
+    server.listen(5)
+    update_log("Server listening on port 5000")
 
     while True:
         client_socket, addr = server.accept()
@@ -87,5 +81,34 @@ def start_server():
         client_handler = threading.Thread(target=handle_client, args=(client_socket, user_id))
         client_handler.start()
 
-if __name__ == "__main__":
-    start_server()
+# GUI setup
+root = ThemedTk(theme="equilux")  # Use a dark theme
+root.title("Text-translation")
+root.geometry("800x600")
+
+style = ttk.Style()
+style.configure("TFrame", background="#2e2e2e")
+style.configure("TButton", padding=10, relief="flat", background="#4a7abc", foreground="white")
+style.configure("TLabel", background="#2e2e2e", foreground="#ffffff", font=("Helvetica", 12))
+
+main_frame = ttk.Frame(root, padding="20 20 20 20", style="TFrame")
+main_frame.pack(fill=tk.BOTH, expand=True)
+
+title_label = ttk.Label(main_frame, text="Text-translation Server Log", font=("Helvetica", 16, "bold"), style="TLabel")
+title_label.pack(pady=(0, 20))
+
+log_frame = ttk.Frame(main_frame, style="TFrame")
+log_frame.pack(fill=tk.BOTH, expand=True)
+
+log_display = scrolledtext.ScrolledText(log_frame, width=80, height=20, font=("Consolas", 10), 
+                                        background="#1e1e1e", foreground="#ffffff", insertbackground="#ffffff")
+log_display.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+status_label = ttk.Label(main_frame, text="Server Status: Running", style="TLabel")
+status_label.pack(pady=(20, 0))
+
+start_thread = threading.Thread(target=start_server)
+start_thread.daemon = True
+start_thread.start()
+
+root.mainloop()

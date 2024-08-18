@@ -2,6 +2,8 @@
 
 ## Setup
 
+`Note if you are using window use default terminal as Command prompt (cmd) else using Debian/RedHat/Fedora use any terminal`.
+
 1. Clone the repository: 
 
 ```bash
@@ -30,6 +32,12 @@ venv\scripts\activate  # For Windows
 
 ```bash
 pip install googletrans==4.0.0-rc1
+
+pip install tkinter # For window
+
+sudo dnf install python3-tkinter # For fedora
+
+pip install googletrans==3.1.0a0 ttkthemes
 ```
 
 6. Now you are done!!, Run your python file: 
