@@ -43,7 +43,5 @@ pip install googletrans==3.1.0a0 ttkthemes
 6. Now you are done!!, Run your python file: 
 
 ```bash
-python text_translation-s.py # For server
-
-python text_translation-c.py # For client
+python app.py
 ```
