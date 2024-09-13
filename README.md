@@ -2,7 +2,7 @@
 
 ## Setup
 
-`Note if you are using window use default terminal as Command prompt (cmd) else using Debian/RedHat/Fedora use any terminal`.
+`Note if you are using window use default terminal as Command prompt (cmd) else using Debian/RedHat/Fedora use any terminal.`
 
 1. Clone the repository: 
 
@@ -38,10 +38,14 @@ pip install tkinter # For window
 sudo dnf install python3-tkinter # For fedora
 
 pip install googletrans==3.1.0a0 ttkthemes
+
+pip install flask-socketio eventlet
+
+pip install flask flask-cors
 ```
 
 6. Now you are done!!, Run your python file: 
 
 ```bash
-python app.py
+python server.py
 ```
