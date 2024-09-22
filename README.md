@@ -31,17 +31,9 @@ venv\scripts\activate  # For Windows
 5. Install python dependencies: 
 
 ```bash
-pip install googletrans==4.0.0-rc1
+pip install -r requirements.txt
 
-pip install tkinter # For window
-
-sudo dnf install python3-tkinter # For fedora
-
-pip install googletrans==3.1.0a0 ttkthemes
-
-pip install flask-socketio eventlet
-
-pip install flask flask-cors
+pip install --upgrade torch transformers
 ```
 
 6. Now you are done!!, Run your python file: 
